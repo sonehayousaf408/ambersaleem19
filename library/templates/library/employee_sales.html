@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Sales Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 70%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px #ccc;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+        th {
+            background-color: #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .no-data {
+            text-align: center;
+            font-size: 18px;
+            color: gray;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Sales Report</h1>
+
+    {% if sales_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Total Sales (Rs)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in sales_data %}
+                <tr>
+                    <td>{{ row.employee__name }}</td>
+                    <td>Rs {{ row.total_sales|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="no-data">No sales data available.</p>
+    {% endif %}
+</body>
+</html>

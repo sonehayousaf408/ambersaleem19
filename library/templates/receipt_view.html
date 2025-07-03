@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipt View</title>
+</head>
+<body>
+    <h1>All Receipts</h1>
+    {% for receipt in receipts %}
+        <h3>Receipt ID: {{ receipt.id }} | Date: {{ receipt.date }} | Total: ${{ receipt.total }}</h3>
+        <ul>
+            {% for item in receipt.items.all %}
+                <li>{{ item.name }} - Qty: {{ item.quantity }} - Price: ${{ item.price }}</li>
+            {% endfor %}
+        </ul>
+        <hr>
+    {% endfor %}
+</body>
+</html>

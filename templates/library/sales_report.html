@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">📊 Weekly Sales Report</h2>
+
+  <!-- Line chart -->
+  <canvas id="salesChart" height="120"></canvas>
+
+  {% if sales_data %}
+    <!-- Raw numbers table (optional but handy) -->
+    <hr>
+    <h4 class="mt-5">Daily Totals</h4>
+    <table class="table table-bordered mt-3">
+      <thead class="table-light">
+        <tr>
+          <th>Date</th>
+          <th>Total (PKR)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in sales_data %}
+        <tr>
+          <td>{{ row.date }}</td>
+          <td>{{ row.total|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="mt-4">No sales recorded in the last 7 days.</p>
+  {% endif %}
+</div>
+
+<!-- Safely dump the Python list into the page -->
+{{ sales_data|json_script:"sales-data" }}
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Parse the JSON placed in the hidden script tag
+  const salesData = JSON.parse(document.getElementById('sales-data').textContent);
+
+  const labels = salesData.map(d => d.date);
+  const totals = salesData.map(d => d.total);
+
+  const ctx = document.getElementById('salesChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Sales Amount (PKR)',
+        data: totals,
+        backgroundColor: 'rgba(54, 162, 235, 0.3)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endblock %}

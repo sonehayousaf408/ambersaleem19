@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>📈 Sales in Last 7 Days</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light text-dark p-4">
+    <div class="container">
+        <h2 class="mb-4">📈 Sales in Last 7 Days</h2>
+
+        <div class="row">
+            <!-- Daily Totals Chart -->
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header">Daily Totals</div>
+                    <div class="card-body">
+                        <canvas id="dailySalesChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Items Table and Chart -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Top 5 Selling Items</div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in item_sales %}
+                                <tr>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="2">No data available</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Items Chart -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Top 5 Items — Bar Chart</div>
+                    <div class="card-body">
+                        <canvas id="topItemsChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Logic -->
+    <script>
+        // Daily Sales Data
+        const dailySalesData = {{ daily_sales|safe }};
+        const dailyLabels = dailySalesData.map(entry => entry.date);
+        const dailyTotals = dailySalesData.map(entry => entry.total);
+
+        const ctx1 = document.getElementById('dailySalesChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: dailyLabels,
+                datasets: [{
+                    label: 'Daily Sales (Rs.)',
+                    data: dailyTotals,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Top Items Data
+        const itemSalesData = {{ item_sales|safe }};
+        const itemLabels = itemSalesData.map(item => item.name);
+        const itemQuantities = itemSalesData.map(item => item.quantity);
+
+        const ctx2 = document.getElementById('topItemsChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: itemLabels,
+                datasets: [{
+                    label: 'Qty Sold',
+                    data: itemQuantities,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

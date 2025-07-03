@@ -1,0 +1,15 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Insights</title>
+</head>
+<body>
+    <h1>Top 5 Customers</h1>
+    <ul>
+        {% for customer in customers %}
+        <li>{{ customer.name }} - ${{ customer.total_spent }} - Points: {{ customer.loyalty_points }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
